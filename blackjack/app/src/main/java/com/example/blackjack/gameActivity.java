@@ -7,8 +7,12 @@ import android.app.Activity;
 import android.content.Context;//토스트
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Toast;//토스트
 
 import com.example.blackjack.R;
@@ -54,6 +58,12 @@ public class gameActivity extends AppCompatActivity {
     private String pList="";
     private String dList="";
 
+    //카드 이미지 리스트
+    ImageView cardImage[]=new ImageView[13];//플레이어 카드 최대 11장 + 딜러 카드 2장 = 13장
+
+    //딜러 전용
+    ImageView cardDealerPlus;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +72,21 @@ public class gameActivity extends AppCompatActivity {
         //============================ 변수 초기화 부분 시작 =========================================
         btnHit = (Button) findViewById(R.id.btn_hit);
         btnStay = (Button) findViewById(R.id.btn_stay);
+
+        cardImage[0] = (ImageView) findViewById(R.id.cardBack1);
+        cardImage[1] = (ImageView) findViewById(R.id.cardBack2);
+        cardImage[2] = (ImageView) findViewById(R.id.cardBack3);
+        cardImage[3] = (ImageView) findViewById(R.id.cardBack4);
+        cardImage[4] = (ImageView) findViewById(R.id.cardBack5);
+        cardImage[5] = (ImageView) findViewById(R.id.cardBack6);
+        cardImage[6] = (ImageView) findViewById(R.id.cardBack7);
+        cardImage[7] = (ImageView) findViewById(R.id.cardBack8);
+        cardImage[8] = (ImageView) findViewById(R.id.cardBack9);
+        cardImage[9] = (ImageView) findViewById(R.id.cardBack10);
+        cardImage[10] = (ImageView) findViewById(R.id.cardBack11);
+        cardImage[11] = (ImageView) findViewById(R.id.cardBack12);
+        cardImage[12] = (ImageView) findViewById(R.id.cardBack13);
+        cardDealerPlus = (ImageView) findViewById(R.id.cardBackDealerPlus);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -130,6 +155,9 @@ public class gameActivity extends AppCompatActivity {
                 playerScore+=cardList[cardOrderNo].value;//플레이어 점수 추가
                 pList+=cardList[cardOrderNo].name;//테스트
 
+                whatCard(cardImage[cardOrderNo], playerCardList[playerOrderNo].name) ;
+                cardAnimation(cardOrderNo);//테스트
+
                 playerOrderNo++;//플레이어용 카드 패 번호
                 cardOrderNo++;//전체 카드에 대한 순서 번호 값 증가
 
@@ -139,6 +167,9 @@ public class gameActivity extends AppCompatActivity {
                     btnStay.setEnabled(false);//Stay 버튼 비활성화
 
                     endIntent.putExtra("playerResult","LOSE");
+                    
+                    endIntent.putExtra("playerScore",playerScore);
+                    endIntent.putExtra("dealerScore",dealerScore);
 
                     Context context=getApplicationContext();
                     int dur= Toast.LENGTH_SHORT;
@@ -165,6 +196,9 @@ public class gameActivity extends AppCompatActivity {
                 btnHit.setEnabled(false);//Hit 버튼 비활성화
                 btnStay.setEnabled(false);//Stay 버튼 비활성화
 
+                //cardImage[3].setImageResource(R.drawable.cardback);//테스트
+                whatCard(cardImage[3], dealerCardList[1].name);
+
                 //딜러의 점수가 16점 이하면 카드 1장 더 받음
                 if(dealerScore<=16){
                     dealerCardList[dealerOrderNo]=cardList[cardOrderNo];//카드 목록에서 카드 받아오기
@@ -173,6 +207,16 @@ public class gameActivity extends AppCompatActivity {
 
                     dealerOrderNo++;//플레이어용 카드 패 번호
                     cardOrderNo++;//전체 카드에 대한 순서 번호 값 증가
+
+                    //cardDealerPlus.setImageResource(R.drawable.cardback);//테스트
+                    whatCard(cardDealerPlus, dealerCardList[2].name);
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            CardDealerPlus();
+                        }
+                    },500);
 
                     endIntent.putExtra("dealerScore",dealerScore);//덧씌우기
 
@@ -319,7 +363,7 @@ public class gameActivity extends AppCompatActivity {
     //게임 시작시 카드 분배
     public void distributeCardAtStart(){
         //====================== 분배 작업 시작 (shuffle 작업 완료 후 시작 )===========================
-        mTask = new TimerTask() {
+        /*mTask = new TimerTask() {
             @Override public void run() {
                 //플레이어 1장 (공개)
                 playerCardList[0]=cardList[0];
@@ -341,7 +385,58 @@ public class gameActivity extends AppCompatActivity {
         };
         //모든 분배에 투자하는 시간을 합쳐서 3초로 계획
         //시작 후 2초 + 섞는 중 토스트 3.5초 + 여유 시간 0.5초 + 분배 3초 = 9초
-        mTimer.schedule(mTask, 6000);
+        mTimer.schedule(mTask, 6000);*/
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //플레이어 1장 (공개)
+                playerCardList[0]=cardList[0];
+                playerScore+=playerCardList[0].value;
+                pList+=cardList[0].name;//테스트
+                //cardImage[0].setImageResource(R.drawable.cardback);//테스트
+                whatCard(cardImage[0], playerCardList[0].name) ;
+                //Card1();
+                cardAnimation(0);//테스트
+            }
+        },6000);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //딜러 1장 (공개)
+                dealerCardList[0]=cardList[1];
+                dealerScore+=dealerCardList[0].value;
+                dList+=cardList[1].name;//테스트
+                //cardImage[1].setImageResource(R.drawable.cardback);//테스트
+                whatCard(cardImage[1], dealerCardList[0].name) ;
+                //Card2();
+                cardAnimation(1);//테스트
+            }
+        },6700);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //플레이어 1장 (공개)
+                playerCardList[1]=cardList[2];
+                playerScore+=playerCardList[1].value;
+                pList+=cardList[2].name;//테스트
+                //cardImage[2].setImageResource(R.drawable.cardback);//테스트
+                whatCard(cardImage[2], playerCardList[1].name) ;
+                //Card3();
+                cardAnimation(2);//테스트
+            }
+        },7400);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                //딜러 1장 (비공개)
+                dealerCardList[1]=cardList[3];
+                dealerScore+=dealerCardList[1].value;
+                dList+=cardList[3].name;//테스트
+                //Card4();
+                cardAnimation(3);//테스트
+            }
+        },8100);
         //====================== 분배 작업 종료 =====================================================
 
         //플레이어의 카드 패 먼저 확인 후 딜러의 카드 패 값 확인
@@ -423,6 +518,7 @@ public class gameActivity extends AppCompatActivity {
         toast.show();
     }//dealerSay 종료
 
+    //점수 계산
     public void calcResult(){
         if(playerScore>dealerScore && playerScore==21){
             //승리 + 블랙잭 O
@@ -454,5 +550,249 @@ public class gameActivity extends AppCompatActivity {
         int dur= Toast.LENGTH_LONG;
         Toast toast=Toast.makeText(context,gameResultToast,dur);
         toast.show();
+    }//calcResult 종료
+
+    //카드 분배 애니메이션
+    /*public void Card1(){//플레이어(공개)
+        Animation card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card1);
+        cardImage[0].startAnimation(card);
     }
+    public void Card2(){//딜러(공개)
+        Animation card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card2);
+        cardImage[1].startAnimation(card);
+    }
+    public void Card3(){//플레이어(공개)
+        Animation card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card3);
+        cardImage[2].startAnimation(card);
+    }
+    public void Card4(){//딜러(비공개)
+        Animation card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card4);
+        cardImage[3].startAnimation(card);
+    }*/
+    //카드 애니메이션
+    public void cardAnimation(int no){
+        Animation card;
+
+        switch (no){
+            case 0:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card1);
+                cardImage[no].startAnimation(card);
+                break;
+            case 1:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card2);
+                cardImage[no].startAnimation(card);
+                break;
+            case 2:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card3);
+                cardImage[no].startAnimation(card);
+                break;
+            case 3:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card4);
+                cardImage[no].startAnimation(card);
+                break;
+            case 4:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card5);
+                cardImage[no].startAnimation(card);
+                break;
+            case 5:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card6);
+                cardImage[no].startAnimation(card);
+                break;
+            case 6:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card7);
+                cardImage[no].startAnimation(card);
+                break;
+            case 7:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card8);
+                cardImage[no].startAnimation(card);
+                break;
+            case 8:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card9);
+                cardImage[no].startAnimation(card);
+                break;
+            case 9:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card10);
+                cardImage[no].startAnimation(card);
+                break;
+            case 10:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card11);
+                cardImage[no].startAnimation(card);
+                break;
+            case 11:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card12);
+                cardImage[no].startAnimation(card);
+                break;
+            case 12:
+                card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card13);
+                cardImage[no].startAnimation(card);
+                break;
+        }
+        
+    }//cardAnimation 종료
+    public void CardDealerPlus(){//딜러 추가 카드 (공개)
+        Animation cardDealPlus = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.carddealerplus);
+        cardDealerPlus.startAnimation(cardDealPlus);
+    }//카드 에니메이션 부분 종료
+
+    //카드 내용
+    public void whatCard(ImageView imageView, String cardname){
+        switch (cardname){
+            case "SpadeA":
+                imageView.setImageResource(R.drawable.c01_2);
+                break;
+            case "Spade2":
+                imageView.setImageResource(R.drawable.c02_2);
+                break;
+            case "Spade3":
+                imageView.setImageResource(R.drawable.c03_2);
+                break;
+            case "Spade4":
+                imageView.setImageResource(R.drawable.c04_2);
+                break;
+            case "Spade5":
+                imageView.setImageResource(R.drawable.c05_2);
+                break;
+            case "Spade6":
+                imageView.setImageResource(R.drawable.c06_2);
+                break;
+            case "Spade7":
+                imageView.setImageResource(R.drawable.c07_2);
+                break;
+            case "Spade8":
+                imageView.setImageResource(R.drawable.c08_2);
+                break;
+            case "Spade9":
+                imageView.setImageResource(R.drawable.c09_2);
+                break;
+            case "Spade10":
+                imageView.setImageResource(R.drawable.c10_2);
+                break;
+            case "SpadeJ":
+                imageView.setImageResource(R.drawable.c11_2);
+                break;
+            case "SpadeQ":
+                imageView.setImageResource(R.drawable.c12_2);
+                break;
+            case "SpadeK":
+                imageView.setImageResource(R.drawable.c13_2);
+                break;
+            case "HeartA":
+                imageView.setImageResource(R.drawable.c01_1);
+                break;
+            case "Heart2":
+                imageView.setImageResource(R.drawable.c02_1);
+                break;
+            case "Heart3":
+                imageView.setImageResource(R.drawable.c03_1);
+                break;
+            case "Heart4":
+                imageView.setImageResource(R.drawable.c04_1);
+                break;
+            case "Heart5":
+                imageView.setImageResource(R.drawable.c05_1);
+                break;
+            case "Heart6":
+                imageView.setImageResource(R.drawable.c06_1);
+                break;
+            case "Heart7":
+                imageView.setImageResource(R.drawable.c07_1);
+                break;
+            case "Heart8":
+                imageView.setImageResource(R.drawable.c08_1);
+                break;
+            case "Heart9":
+                imageView.setImageResource(R.drawable.c09_1);
+                break;
+            case "Heart10":
+                imageView.setImageResource(R.drawable.c10_1);
+                break;
+            case "HeartJ":
+                imageView.setImageResource(R.drawable.c11_1);
+                break;
+            case "HeartQ":
+                imageView.setImageResource(R.drawable.c12_1);
+                break;
+            case "HeartK":
+                imageView.setImageResource(R.drawable.c13_1);
+                break;
+            case "CloverA":
+                imageView.setImageResource(R.drawable.c01_3);
+                break;
+            case "Clover2":
+                imageView.setImageResource(R.drawable.c02_3);
+                break;
+            case "Clover3":
+                imageView.setImageResource(R.drawable.c03_3);
+                break;
+            case "Clover4":
+                imageView.setImageResource(R.drawable.c04_3);
+                break;
+            case "Clover5":
+                imageView.setImageResource(R.drawable.c05_3);
+                break;
+            case "Clover6":
+                imageView.setImageResource(R.drawable.c06_3);
+                break;
+            case "Clover7":
+                imageView.setImageResource(R.drawable.c07_3);
+                break;
+            case "Clover8":
+                imageView.setImageResource(R.drawable.c08_3);
+                break;
+            case "Clover9":
+                imageView.setImageResource(R.drawable.c09_3);
+                break;
+            case "Clover10":
+                imageView.setImageResource(R.drawable.c10_3);
+                break;
+            case "CloverJ":
+                imageView.setImageResource(R.drawable.c11_3);
+                break;
+            case "CloverQ":
+                imageView.setImageResource(R.drawable.c12_3);
+                break;
+            case "CloverK":
+                imageView.setImageResource(R.drawable.c13_3);
+                break;
+            case "DiamondA":
+                imageView.setImageResource(R.drawable.c01_4);
+                break;
+            case "Diamond2":
+                imageView.setImageResource(R.drawable.c02_4);
+                break;
+            case "Diamond3":
+                imageView.setImageResource(R.drawable.c03_4);
+                break;
+            case "Diamond4":
+                imageView.setImageResource(R.drawable.c04_4);
+                break;
+            case "Diamond5":
+                imageView.setImageResource(R.drawable.c05_4);
+                break;
+            case "Diamond6":
+                imageView.setImageResource(R.drawable.c06_4);
+                break;
+            case "Diamond7":
+                imageView.setImageResource(R.drawable.c07_4);
+                break;
+            case "Diamond8":
+                imageView.setImageResource(R.drawable.c08_4);
+                break;
+            case "Diamond9":
+                imageView.setImageResource(R.drawable.c09_4);
+                break;
+            case "Diamond10":
+                imageView.setImageResource(R.drawable.c10_4);
+                break;
+            case "DiamondJ":
+                imageView.setImageResource(R.drawable.c11_4);
+                break;
+            case "DiamondQ":
+                imageView.setImageResource(R.drawable.c12_4);
+                break;
+            case "DiamondK":
+                imageView.setImageResource(R.drawable.c13_4);
+                break;
+        }
+    }//whatCard 종료
 }//gameActivity 종료

@@ -46,4 +46,169 @@
         android:layout_marginRight="90dp"
         android:layout_marginBottom="10dp"
         tools:ignore="MissingConstraints" />
+
+    <ImageView
+        android:id="@+id/cardBack"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack1"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack2"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack3"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack4"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack5"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack6"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack7"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack8"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack9"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack10"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack11"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack12"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBack13"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
+
+    <ImageView
+        android:id="@+id/cardBackDealerPlus"
+        android:layout_width="90dp"
+        android:layout_height="130dp"
+        android:layout_marginLeft="40dp"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:srcCompat="@drawable/cardbacksero" />
 </androidx.constraintlayout.widget.ConstraintLayout>

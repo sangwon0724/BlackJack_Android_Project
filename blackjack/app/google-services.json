@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "540500828960",
+    "project_id": "black-jack-game-4021e",
+    "storage_bucket": "black-jack-game-4021e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:540500828960:android:21082e778ef1a3c2c4ed45",
+        "android_client_info": {
+          "package_name": "com.example.blackjack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "540500828960-v279tvbf3tf1fv5aqs02o5ng4cr8ided.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.blackjack",
+            "certificate_hash": "ca370120c65c1fa75ecb8a0d8dea5817a1e5e120"
+          }
+        },
+        {
+          "client_id": "540500828960-u3ur0lgpc357fkvu85apqrs495eb8pho.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKVtE7vREeOaXnYWK37IY-JD9OWVO-Wzo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "540500828960-u3ur0lgpc357fkvu85apqrs495eb8pho.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

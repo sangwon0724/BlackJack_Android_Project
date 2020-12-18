@@ -55,10 +55,6 @@ public class gameActivity extends AppCompatActivity {
     //결과용
     private String gameResultToast;
 
-    //테스트
-    private String pList="";
-    private String dList="";
-
     //카드 이미지 리스트
     ImageView cardImage[]=new ImageView[13];//플레이어 카드 최대 11장 + 딜러 카드 2장 = 13장
 
@@ -156,10 +152,9 @@ public class gameActivity extends AppCompatActivity {
             public void onClick(View v) {
                 playerCardList[playerOrderNo]=cardList[cardOrderNo];//카드 목록에서 카드 받아오기
                 playerScore+=cardList[cardOrderNo].value;//플레이어 점수 추가
-                pList+=cardList[cardOrderNo].name;//테스트
 
                 whatCard(cardImage[cardOrderNo], playerCardList[playerOrderNo].name) ;
-                cardAnimation(cardOrderNo);//테스트
+                cardAnimation(cardOrderNo);
 
                 playerOrderNo++;//플레이어용 카드 패 번호
                 cardOrderNo++;//전체 카드에 대한 순서 번호 값 증가
@@ -176,9 +171,6 @@ public class gameActivity extends AppCompatActivity {
 
                     Context context=getApplicationContext();
                     int dur= Toast.LENGTH_SHORT;
-                    /*Toast toast=Toast.makeText(context,"버스트 되었습니다.\n당신의 패배입니다...",dur);
-                    ((TextView)((LinearLayout)toast.getView()).getChildAt(0))
-                            .setGravity(Gravity.CENTER_HORIZONTAL);*/
                     Toast toast=Toast.makeText(context,"버스트 되었습니다. 당신의 패배입니다...",dur);
                     toast.show();
 
@@ -206,19 +198,16 @@ public class gameActivity extends AppCompatActivity {
                 btnHit.setEnabled(false);//Hit 버튼 비활성화
                 btnStay.setEnabled(false);//Stay 버튼 비활성화
 
-                //cardImage[3].setImageResource(R.drawable.cardback);//테스트
                 whatCard(cardImage[3], dealerCardList[1].name);
 
                 //딜러의 점수가 16점 이하면 카드 1장 더 받음
                 if(dealerScore<=16){
                     dealerCardList[dealerOrderNo]=cardList[cardOrderNo];//카드 목록에서 카드 받아오기
                     dealerScore+=cardList[cardOrderNo].value;//플레이어 점수 추가
-                    dList+=cardList[cardOrderNo].name;//테스트
 
                     dealerOrderNo++;//플레이어용 카드 패 번호
                     cardOrderNo++;//전체 카드에 대한 순서 번호 값 증가
 
-                    //cardDealerPlus.setImageResource(R.drawable.cardback);//테스트
                     whatCard(cardDealerPlus, dealerCardList[2].name);
 
                     new Handler().postDelayed(new Runnable() {
@@ -244,11 +233,6 @@ public class gameActivity extends AppCompatActivity {
                 }
                 else{
                     //딜러의 점수가 17점 이상이면 바로 점수 계산 실행
-                    /*mTask = new TimerTask() {
-                        @Override public void run() {
-                            calcResult();
-                        }
-                    };*/
                     mTask = new TimerTask() {
                         @Override public void run() {
                             gameActivity.this.runOnUiThread(new Runnable(){
@@ -263,8 +247,6 @@ public class gameActivity extends AppCompatActivity {
 
                 endIntent.putExtra("playerScore",playerScore);
                 endIntent.putExtra("dealerScore",dealerScore);
-                endIntent.putExtra("pList",pList);//테스트
-                endIntent.putExtra("dList",dList);//테스트
 
                 mTask = new TimerTask() {
                     @Override public void run() {
@@ -373,41 +355,14 @@ public class gameActivity extends AppCompatActivity {
     //게임 시작시 카드 분배
     public void distributeCardAtStart(){
         //====================== 분배 작업 시작 (shuffle 작업 완료 후 시작 )===========================
-        /*mTask = new TimerTask() {
-            @Override public void run() {
-                //플레이어 1장 (공개)
-                playerCardList[0]=cardList[0];
-                playerScore+=playerCardList[0].value;
-                pList+=cardList[0].name;//테스트
-                //딜러 1장 (공개)
-                dealerCardList[0]=cardList[1];
-                dealerScore+=dealerCardList[0].value;
-                dList+=cardList[1].name;//테스트
-                //플레이어 1장 (공개)
-                playerCardList[1]=cardList[2];
-                playerScore+=playerCardList[1].value;
-                pList+=cardList[2].name;//테스트
-                //딜러 1장 (비공개)
-                dealerCardList[1]=cardList[3];
-                dealerScore+=dealerCardList[1].value;
-                dList+=cardList[3].name;//테스트
-            }
-        };
-        //모든 분배에 투자하는 시간을 합쳐서 3초로 계획
-        //시작 후 2초 + 섞는 중 토스트 3.5초 + 여유 시간 0.5초 + 분배 3초 = 9초
-        mTimer.schedule(mTask, 6000);*/
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 //플레이어 1장 (공개)
                 playerCardList[0]=cardList[0];
                 playerScore+=playerCardList[0].value;
-                pList+=cardList[0].name;//테스트
-                //cardImage[0].setImageResource(R.drawable.cardback);//테스트
                 whatCard(cardImage[0], playerCardList[0].name) ;
-                //Card1();
-                cardAnimation(0);//테스트
+                cardAnimation(0);
             }
         },6000);
         new Handler().postDelayed(new Runnable() {
@@ -416,11 +371,8 @@ public class gameActivity extends AppCompatActivity {
                 //딜러 1장 (공개)
                 dealerCardList[0]=cardList[1];
                 dealerScore+=dealerCardList[0].value;
-                dList+=cardList[1].name;//테스트
-                //cardImage[1].setImageResource(R.drawable.cardback);//테스트
                 whatCard(cardImage[1], dealerCardList[0].name) ;
-                //Card2();
-                cardAnimation(1);//테스트
+                cardAnimation(1);
             }
         },6700);
         new Handler().postDelayed(new Runnable() {
@@ -429,11 +381,8 @@ public class gameActivity extends AppCompatActivity {
                 //플레이어 1장 (공개)
                 playerCardList[1]=cardList[2];
                 playerScore+=playerCardList[1].value;
-                pList+=cardList[2].name;//테스트
-                //cardImage[2].setImageResource(R.drawable.cardback);//테스트
                 whatCard(cardImage[2], playerCardList[1].name) ;
-                //Card3();
-                cardAnimation(2);//테스트
+                cardAnimation(2);
             }
         },7400);
         new Handler().postDelayed(new Runnable() {
@@ -442,9 +391,7 @@ public class gameActivity extends AppCompatActivity {
                 //딜러 1장 (비공개)
                 dealerCardList[1]=cardList[3];
                 dealerScore+=dealerCardList[1].value;
-                dList+=cardList[3].name;//테스트
-                //Card4();
-                cardAnimation(3);//테스트
+                cardAnimation(3);
             }
         },8100);
         //====================== 분배 작업 종료 =====================================================
@@ -458,9 +405,6 @@ public class gameActivity extends AppCompatActivity {
 
             Context context=getApplicationContext();
             int dur= Toast.LENGTH_SHORT;
-            /*Toast toast=Toast.makeText(context,"버스트 되었습니다.\n당신의 패배입니다...",dur);
-            ((TextView)((LinearLayout)toast.getView()).getChildAt(0))
-                    .setGravity(Gravity.CENTER_HORIZONTAL);*/
             Toast toast=Toast.makeText(context,"버스트 되었습니다. 당신의 패배입니다...",dur);
             toast.show();
 
@@ -475,10 +419,6 @@ public class gameActivity extends AppCompatActivity {
             //딜러에 대한 체크 시작
             if(dealerScore==21){
                 dealerSay="딜러 : 블랙잭입니다.";
-                /*Context context=getApplicationContext();
-                int dur= Toast.LENGTH_SHORT;
-                Toast toast=Toast.makeText(context,dealerSay,dur);
-                toast.show();*/
 
                 mTask = new TimerTask() {
                     @Override public void run() {

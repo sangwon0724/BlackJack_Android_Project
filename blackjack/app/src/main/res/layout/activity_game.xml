@@ -4,13 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/blackjackgame"
     tools:context="com.example.blackjack.gameActivity">
 
     <View
         android:id="@+id/view_dealer"
         android:layout_width="300dp"
         android:layout_height="100dp"
-        android:background="@color/colorGamePan"
+        android:background="@drawable/border"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -19,7 +20,7 @@
         android:id="@+id/view_player"
         android:layout_width="300dp"
         android:layout_height="100dp"
-        android:background="@color/colorGamePan"
+        android:background="@drawable/my_border"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

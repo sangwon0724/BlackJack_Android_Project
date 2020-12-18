@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -67,6 +68,8 @@ public class gameActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_game);
 
         //============================ 변수 초기화 부분 시작 =========================================
@@ -167,7 +170,7 @@ public class gameActivity extends AppCompatActivity {
                     btnStay.setEnabled(false);//Stay 버튼 비활성화
 
                     endIntent.putExtra("playerResult","LOSE");
-                    
+
                     endIntent.putExtra("playerScore",playerScore);
                     endIntent.putExtra("dealerScore",dealerScore);
 
@@ -178,6 +181,13 @@ public class gameActivity extends AppCompatActivity {
                             .setGravity(Gravity.CENTER_HORIZONTAL);*/
                     Toast toast=Toast.makeText(context,"버스트 되었습니다. 당신의 패배입니다...",dur);
                     toast.show();
+
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            whatCard(cardImage[3], dealerCardList[1].name);//빠끄
+                        }
+                    },1500);
 
                     mTask = new TimerTask() {
                         @Override public void run() {
@@ -520,12 +530,12 @@ public class gameActivity extends AppCompatActivity {
 
     //점수 계산
     public void calcResult(){
-        if(playerScore>dealerScore && playerScore==21){
+        if(playerScore>dealerScore && playerScore!=21){
             //승리 + 블랙잭 O
             gameResultToast="당신의 승리입니다!";
             endIntent.putExtra("playerResult","WIN");
         }
-        else if(playerScore>dealerScore&& playerScore!=21){
+        else if(playerScore>dealerScore&& playerScore==21){
             //승리 + 블랙잭 X
             gameResultToast="블랙잭! 당신의 승리입니다!";
             endIntent.putExtra("playerResult","BLACK JACK");
@@ -552,23 +562,6 @@ public class gameActivity extends AppCompatActivity {
         toast.show();
     }//calcResult 종료
 
-    //카드 분배 애니메이션
-    /*public void Card1(){//플레이어(공개)
-        Animation card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card1);
-        cardImage[0].startAnimation(card);
-    }
-    public void Card2(){//딜러(공개)
-        Animation card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card2);
-        cardImage[1].startAnimation(card);
-    }
-    public void Card3(){//플레이어(공개)
-        Animation card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card3);
-        cardImage[2].startAnimation(card);
-    }
-    public void Card4(){//딜러(비공개)
-        Animation card = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.card4);
-        cardImage[3].startAnimation(card);
-    }*/
     //카드 애니메이션
     public void cardAnimation(int no){
         Animation card;

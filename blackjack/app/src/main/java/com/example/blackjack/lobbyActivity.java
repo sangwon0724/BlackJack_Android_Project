@@ -2,14 +2,18 @@ package com.example.blackjack;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -34,17 +38,16 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
     private FirebaseAuth mAuth ;
     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-    String name, email, uid;
+    String uid;
 
     private DatabaseReference mDatabase;
 
-    Intent intent, gameIntent;
+    Intent intent, gameIntent, myInfoIntent;
 
     Integer tempAll;//전체 판 수 확인용
     Integer tempVictory;//승리 값 확인용
     Integer tempDraw;//무승부 값 확인용
     Integer tempLose;//패배 값 확인용
-    Integer tempBlackJack;//패배 값 확인용
 
     //딜레이용
     private TimerTask mTask;
@@ -53,6 +56,8 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_lobby);
 
         btnInfo = (Button)findViewById(R.id.btn_info);
@@ -65,18 +70,9 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
 
         intent = getIntent();//데이터 수신
         gameIntent = new Intent(this, gameActivity.class);//intent 값 기본 설정
+        myInfoIntent = new Intent(this, myActivity.class);//intent 값 기본 설정
 
         if (user != null) {
-            // Name, email address
-            name = user.getDisplayName();
-            email = user.getEmail();
-
-            // Check if user's email is verified
-            boolean emailVerified = user.isEmailVerified();
-
-            // The user's ID, unique to the Firebase project. Do NOT use this value to
-            // authenticate with your backend server, if you have one. Use
-            // FirebaseUser.getIdToken() instead.
             uid = user.getUid();
 
             mDatabase = FirebaseDatabase.getInstance().getReference();
@@ -90,12 +86,6 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
                     tempVictory=snapshot.child("user").child(uid.toString()).child("victory").getValue(Integer.class);
                     tempDraw=snapshot.child("user").child(uid.toString()).child("draw").getValue(Integer.class);
                     tempLose=snapshot.child("user").child(uid.toString()).child("lose").getValue(Integer.class);
-                    tempBlackJack=snapshot.child("user").child(uid.toString()).child("blackjack").getValue(Integer.class);
-
-                    //Log.e("tempVictory  초기화", String.valueOf(tempVictory));
-                    //Log.e("tempDraw 초기화", String.valueOf(tempDraw));
-                    //Log.e("tempLose 초기화", String.valueOf(tempLose));
-                    //Log.e("tempBlackJack 초기화", String.valueOf(tempBlackJack));
                 }
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {}
@@ -106,7 +96,7 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
         btnInfo.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //sendData();
+                    startActivityForResult(myInfoIntent,123);
             }
         });
 
@@ -114,7 +104,7 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
         btnSetting.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //sendData();
+                popupWindowSetting();
             }
         });
 
@@ -141,8 +131,7 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
         btnStart.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //gameStart();
-                setMyPopupWindow();
+                popupWindowByGameStart();
             }
         });
 
@@ -150,7 +139,7 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
         btnRule.setOnClickListener(new Button.OnClickListener(){
             @Override
             public void onClick(View v) {
-                //sendData();
+                popupWindowShowRules();
             }
         });
     }//onCreate 종료
@@ -158,11 +147,6 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
     @Override
     protected void onStart() {
         super.onStart();
-
-        //Log.e("tempVictory  확인", String.valueOf(tempVictory));
-        //Log.e("tempDraw 확인", String.valueOf(tempDraw));
-        //Log.e("tempLose 확인", String.valueOf(tempLose));
-        //Log.e("tempBlackJack 확인", String.valueOf(tempBlackJack));
 
         mTask = new TimerTask() {
             @Override public void run() {
@@ -178,13 +162,10 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
                 if(tempLose==null){
                     mDatabase.child("user").child(uid.toString()).child("lose").setValue(0);//값을 0으로 설정
                 }
-                if(tempBlackJack==null){
-                    mDatabase.child("user").child(uid.toString()).child("blackjack").setValue(0);//값을 0으로 설정
-                }
             }
         };
         mTimer = new Timer();
-        mTimer.schedule(mTask, 5000);
+        mTimer.schedule(mTask, 1500);
     }//onStart 종료
 
     //startActivityForResult때문에 필요
@@ -208,29 +189,6 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
 
 
     //================================== 추가 내용 ==================================================
-
-    //btnGo 전용 함수
-    /*public void goSelectActivity(){
-        startActivity(intent);
-    }*/
-
-    @IgnoreExtraProperties
-    public class User {
-
-        public String name;
-        public String text;
-
-        public User() {
-            // Default constructor required for calls to DataSnapshot.getValue(User.class)
-        }
-
-        public User(String name, String text) {
-            this.name = name;
-            this.text = text;
-        }
-
-    }
-
     //게임 시작
     private void gameStart(){
 
@@ -246,36 +204,9 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
         startActivityForResult(gameIntent,123);
     }
 
-    //로그아웃
-    private void signOut() {
-        FirebaseAuth.getInstance().signOut();
-    }
-
-    //회원탈퇴
-    private void revokeAccess() {
-        mAuth.getCurrentUser().delete();
-    }
-
-    /*@Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_logout:
-                signOut();
-                finishAffinity();
-                break;
-            case R.id.btn_revoke:
-                revokeAccess();
-                finishAffinity();
-                break;
-        }
-    }*/
-
-    //팝업 윈도우용 함수
-    private void setMyPopupWindow() {
-        //LayoutInflater inflater = (LayoutInflater) getBaseContext().getSystemService(LAYOUT_INFLATER_SERVICE);
+    //게임 시작
+    private void popupWindowByGameStart() {
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        //LayoutInflater inflater = LayoutInflater.from(this);
-        //View popupLayout = inflater.inflate(R.layout., null);
         View popupLayout = inflater.inflate(R.layout.a1or11, null);
 
         // create the popup window
@@ -284,7 +215,7 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
         boolean focusable = true; // lets taps outside the popup also dismiss it
         final PopupWindow mPopupWindow = new PopupWindow(popupLayout, width, height, focusable);//팝업 윈도우
 
-        //mPopupWindow.setContentView(popupLayout);//임시
+
         mPopupWindow.setTouchable(true); // PopupWindow 위에서 Button의 Click이 가능하도록 setTouchable(true); 임시
 
         Button btn_A1 = (Button) popupLayout.findViewById(R.id.Ais1);
@@ -311,5 +242,44 @@ public class lobbyActivity extends AppCompatActivity /*implements View.OnClickLi
                 gameStart();
             }
         });
-    }//setMyPopupWindow 종료
+    }//popupWindowByGameStart 종료
+
+    //환경 설정
+    public void popupWindowSetting(){
+        Context mContext = getApplicationContext();
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        //R.layout.dialog는 xml 파일명이고 R.id.popup은 보여줄 레이아웃 아이디
+        View layout = inflater.inflate(R.layout.setting_land,(ViewGroup) findViewById(R.id.setting_land));
+        AlertDialog.Builder aDialog = new AlertDialog.Builder(lobbyActivity.this);
+        aDialog.setView(layout);// dialog.xml 파일을 뷰로 셋팅
+        // 그냥 닫기버튼을 위한 부분
+        aDialog.setNegativeButton("×", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }); //팝업창 생성
+        AlertDialog ad = aDialog.create();
+        ad.show();//보여줌!
+    }//popupWindowSetting 종료
+
+    //규칙 보기
+    public void popupWindowShowRules(){
+        Context mContext = getApplicationContext();
+        LayoutInflater inflater = (LayoutInflater) mContext.getSystemService(LAYOUT_INFLATER_SERVICE);
+
+        //R.layout.dialog는 xml 파일명이고 R.id.popup은 보여줄 레이아웃 아이디
+        View layout = inflater.inflate(R.layout.menu_land, (ViewGroup) findViewById(R.id.menu_land));
+        AlertDialog.Builder aDialog = new AlertDialog.Builder(lobbyActivity.this);
+        aDialog.setView(layout);// dialog.xml 파일을 뷰로 셋팅
+
+        // 그냥 닫기버튼을 위한 부분
+        aDialog.setNegativeButton("×", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        }); //팝업창 생성
+        AlertDialog ad = aDialog.create();
+        ad.show();//보여줌!
+    }//popupWindowShowRules 종료
 }

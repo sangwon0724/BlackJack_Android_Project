@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/menu_land"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#191A19"
+    android:orientation="vertical"
+    tools:context=".MainActivity"> <!--해당 액티비티 선언-->
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#000000"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="
+                \n\n[ 1. 시작의 시간 ]
+                \n\n -게임 시작시 플레이어가 A 카드의 값을 1로할지 11로 할지 정한다
+                \n\n -딜러가 카드를 섞는다
+                \n\n -플레이어가 한 장을 받는다 → 딜러가 한 장을 갖는다
+                \n\n -플레이어가 한 장을 받는다
+                \n   → 딜러가 뒤집어둔 상태의 카드 한 장을 갖는다
+                \n   → 딜러는 혼자만 해당 카드의 값을 확인 한 후
+                \n        블랙잭의 여부를 알려준 후 다시 놓는다
+                \n\n [ 2. 준비의 시간 ]
+                \n\n -플레이어는 자신의 카드 두 장을 확인한다
+                \n\n -각 카드의 값의 합이 21이면 블랙잭(Black Jack)으로 승리한다
+                \n\n -각 카드의 값의 합이 21이 넘어가면 버스트(Bust)로 패배한다
+                \n\n -합이 21 미만일때는 힛(Hit) 또는 스테이(Stay)를 통해 패의 추가 여부를 결정한다
+                \n\n -힛(Hit)은 카드 추가를 의미한다
+                \n\n -스테이(Stay)는 카드를 그만 받겠다는 것을 의미한다
+                \n\n -단 힛(Hit)을 할 경우에는 원하는 만큼 카드를 받을 수 있지만 중간에 합이 21을 넘으면 버스트(Bust)로 패배다
+                \n\n -버스트(Bust)될 경우에는 바로 게임 종료 화면이 나온다
+                \n\n -스테이(Stay)를 했을 경우에는 운명의 시간으로 진행된다
+                \n\n [ 3. 운명의 시간 ]
+                \n\n -딜러의 엎어져 있던 카드 한 장을 확인 한다
+                \n\n -딜러의 카드의 합이 16 이하일 경우에는 반드시 힛으로 오픈된 카드 한 장을 더 받고, 17 이상일 경우에는 반드시 스테이로 멈춘다
+                \n\n -딜러와 플레이어의 패를 비교했을 때, 딜러가 높으면 플레이어의 패배, 딜러가 낮으면 플레이어의 승리다\n\n"
+            android:textColor="#B4B4B4"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:typeface="normal" />
+    </LinearLayout>
+</ScrollView>

@@ -3,11 +3,16 @@ package com.example.blackjack;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.blackjack.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -25,9 +30,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class MainActivity extends AppCompatActivity {
-    TextView test;
-
     private FirebaseAuth mAuth;
+    FirebaseUser currentUser;
 
     private static final String TAG = "GoogleActivity";
     private static final int RC_SIGN_IN = 9001;
@@ -35,14 +39,17 @@ public class MainActivity extends AppCompatActivity {
     private GoogleSignInClient mGoogleSignInClient;
     private SignInButton signInButton;
 
+    private ImageButton imgBtnStart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
 
-        test=(TextView)findViewById(R.id.test);
         signInButton = findViewById(R.id.signInButton);
+        imgBtnStart= findViewById(R.id.imgBtnStart);
 
         // Button listeners
         signInButton.setOnClickListener(new View.OnClickListener() {
@@ -60,14 +67,39 @@ public class MainActivity extends AppCompatActivity {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         mAuth = FirebaseAuth.getInstance();
+        currentUser = mAuth.getCurrentUser();
+
+        if(currentUser!=null){
+            signInButton.setVisibility(View.INVISIBLE);
+        }
+        else{
+            signInButton.setVisibility(View.VISIBLE);
+        }
+
+        imgBtnStart.setOnClickListener(new Button.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(currentUser!=null){
+                    updateUI(currentUser);
+                }
+                else{
+                    Context context=getApplicationContext();
+                    int dur= Toast.LENGTH_SHORT;
+                    Toast toast=Toast.makeText(context,"로그인 오류 : 다시 로그인 해주시길 바랍니다.",dur);
+                    toast.show();
+                    
+                    signInButton.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }//onCreate 종료
 
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        updateUI(currentUser);
+        //이 부분에서 자동 로그인
+        //FirebaseUser currentUser = mAuth.getCurrentUser();
+        //updateUI(currentUser);
     }
 
     @Override
@@ -125,33 +157,5 @@ public class MainActivity extends AppCompatActivity {
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    private void signOut() {
-        // Firebase sign out
-        mAuth.signOut();
-
-        // Google sign out
-        mGoogleSignInClient.signOut().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
-                });
-    }
-
-    private void revokeAccess() {
-        // Firebase sign out
-        mAuth.signOut();
-
-        // Google revoke access
-        mGoogleSignInClient.revokeAccess().addOnCompleteListener(this,
-                new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        updateUI(null);
-                    }
-                });
     }
 }//MainActivity 종료

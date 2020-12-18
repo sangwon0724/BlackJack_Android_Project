@@ -6,7 +6,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -23,7 +25,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class endActivity extends AppCompatActivity {
-    private TextView view_result;
+    private TextView view_result, view_score;
     private Button btn_return_lobby;
 
     private FirebaseAuth mAuth ;
@@ -40,7 +42,6 @@ public class endActivity extends AppCompatActivity {
     int tempVictory;//승리 값 확인용
     int tempDraw;//무승부 값 확인용
     int tempLose;//패배 값 확인용
-    int tempBlackJack;//패배 값 확인용
 
     int playerScore;
     int dealerScore;
@@ -49,16 +50,15 @@ public class endActivity extends AppCompatActivity {
     private TimerTask mTask;
     private Timer mTimer;
 
-    //테스트
-    private String pList="";
-    private String dList="";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_end);
 
-        view_result = (TextView) findViewById(R.id.view_result);
+        view_result = (TextView) findViewById(R.id.text_result);
+        view_score = (TextView) findViewById(R.id.text_data);
         btn_return_lobby = (Button) findViewById(R.id.btn_return_lobby);
 
         //gameActivity의 intent 값 가져오기
@@ -70,9 +70,10 @@ public class endActivity extends AppCompatActivity {
         playerResult = intent.getExtras().getString("playerResult");
         playerScore = intent.getExtras().getInt("playerScore");
         dealerScore = intent.getExtras().getInt("dealerScore");
-        pList = intent.getExtras().getString("pList");
-        dList = intent.getExtras().getString("dList");
-        view_result.setText("결과 : "+playerResult+" 내 점수 : "+playerScore+" VS 딜러 점수 : "+dealerScore+"\n내 리스트 : "+pList+"딜러 리스트 : "+dList);
+
+        view_result.setText(playerResult);
+        view_score.setText(playerScore+" : "+dealerScore);
+
 
         //타이머 설정
         mTimer=new Timer();
@@ -92,12 +93,6 @@ public class endActivity extends AppCompatActivity {
                 tempVictory= snapshot.child("user").child(uid.toString()).child("victory").getValue(Integer.class);
                 tempDraw= snapshot.child("user").child(uid.toString()).child("draw").getValue(Integer.class);
                 tempLose=snapshot.child("user").child(uid.toString()).child("lose").getValue(Integer.class);
-                tempBlackJack= snapshot.child("user").child(uid.toString()).child("blackjack").getValue(Integer.class);
-
-                //Log.e("tempVictory", String.valueOf(tempVictory));
-                //Log.e("tempDraw", String.valueOf(tempDraw));
-                //Log.e("tempLose", String.valueOf(tempLose));
-                //Log.e("tempBlackJack", String.valueOf(tempBlackJack));
             }
             @Override
             public void onCancelled(@NonNull DatabaseError error) {}
@@ -108,50 +103,20 @@ public class endActivity extends AppCompatActivity {
                 endActivity.this.runOnUiThread(new Runnable(){
                     public void run(){//실제 기능 구현
                         if(playerResult.equals("WIN")){
-                            /*Context context=getApplicationContext();
-                            int dur= Toast.LENGTH_SHORT;
-                            Toast toast=Toast.makeText(context,"이전 승리 횟수 : "+tempVictory,dur);
-                            toast.show();*/
-
                             tempVictory++;
                             mDatabase.child("user").child(uid.toString()).child("victory").setValue(tempVictory);
-
-                            //view_result.setText(playerResult+" 승리 횟수 : "+tempVictory);
                         }
                         else if(playerResult.equals("BLACK JACK")){
-                            /*Context context=getApplicationContext();
-                            int dur= Toast.LENGTH_SHORT;
-                            Toast toast=Toast.makeText(context,"이전 승리 횟수 : "+tempVictory,dur);
-                            toast.show();*/
-
                             tempVictory++;
-                            tempBlackJack++;
                             mDatabase.child("user").child(uid.toString()).child("victory").setValue(tempVictory);
-                            mDatabase.child("user").child(uid.toString()).child("blackjack").setValue(tempBlackJack);
-
-                            //view_result.setText(playerResult+" 승리 횟수 : "+tempVictory);
                         }
                         else if(playerResult.equals("DRAW")){
-                            /*Context context=getApplicationContext();
-                            int dur= Toast.LENGTH_SHORT;
-                            Toast toast=Toast.makeText(context,"이전 무승부 횟수 : "+tempDraw,dur);
-                            toast.show();*/
-
                             tempDraw++;
                             mDatabase.child("user").child(uid.toString()).child("draw").setValue(tempDraw);
-
-                            //view_result.setText(playerResult+" 무승부 횟수 : "+tempDraw);
                         }
                         else if(playerResult.equals("LOSE")){
-                            /*Context context=getApplicationContext();
-                            int dur= Toast.LENGTH_SHORT;
-                            Toast toast=Toast.makeText(context,"이전 패배 횟수 : "+String.valueOf(tempLose),dur);
-                            toast.show();*/
-
                             tempLose++;
                             mDatabase.child("user").child(uid.toString()).child("lose").setValue(tempLose);
-
-                            //view_result.setText(playerResult+" 패배 횟수 : "+tempLose);
                         }
 
                         tempAll=tempVictory+tempDraw+tempLose;
@@ -161,15 +126,6 @@ public class endActivity extends AppCompatActivity {
             }
         };
         mTimer.schedule(mTask, 150);
-
-
-        /*mTask = new TimerTask() {
-            @Override public void run() {
-                tempAll=tempVictory+tempDraw+tempLose;
-                mDatabase.child("user").child(uid.toString()).child("all").setValue(tempAll);
-            }
-        };
-        mTimer.schedule(mTask, 300);*/
 
         //종료하기
         btn_return_lobby.setOnClickListener(new Button.OnClickListener(){
